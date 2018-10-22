@@ -1,0 +1,93 @@
+
+<body id="loginBody" onload="loginVerification()";>
+   <link rel="stylesheet" href="style.css" type="text/css";>
+   <div id="welcomeParagraph">
+      <p>  Are you ready to test if you are a true Londoner..! <br> Let's begin <br>
+         Login to start
+      </p>
+   </div>
+   <div class="center" id="loginPage">
+      <!-- Login form for user -->
+      <form id="userDetails" onsubmit="return false">
+         Email:&nbsp; &nbsp;&nbsp; &nbsp; <input type="email" id="emailInput" required> <br>
+         Password: <input type="password" id="passwordInput"> <br>
+         <input id="align" type="submit" value= "Sign in"  onclick="signIn()">
+         <p id="LoginFailure"> </p>
+         <p id="registerPrompt"> Not a user? </p>
+         <!-- Open registration page -->
+         <button id="align" onclick="location.href = 'register.php';">Register</button>
+      </form>
+   </div>
+   <!--  open game page -->
+   <button style="display:none;" onclick="location.href = 'quizpage.html';">Start Quiz</button>
+   </div>
+   <script>
+      // Hide welcome paragraph from user
+         $(document).ready(function(){
+                 $("#welcomeParagraph").hide();
+         
+             });
+         
+         // show "welcomePargraph" in a fadeIn transition effect
+         $(document).ready(function(){
+                 $("#welcomeParagraph").fadeIn(3000);
+         
+             });
+         
+         // check if a user is logged on
+         function loginVerification () {
+            // if user is not logged on then log on user 
+            if (localStorage.loggedInUserEmail === null) {
+          
+         if(localStorage.loggedInUserEmail !== undefined) {
+         var loggedInUser= JSON.parse(localStorage[localStorage.loggedInUserEmail]);
+         
+         document.getElementById("loginPage").innerHTML= loggedInUser.firstName + " you are currently logged in.<br> Click 'Logout' if you wish <br> to sign off ";
+         document.getElementById("welcomeParagraph").innerHTML= ""; 
+         }
+         } else
+         //if user is already logged in then on loading "Login" page again log out user
+          logout();
+         }
+         // log in user
+         function signIn() {
+         var email= document.getElementById("emailInput").value;
+         // give feedback to user if the email does not exist
+         if (localStorage[email] === undefined) {
+         
+         document.getElementById("LoginFailure").innerHTML= "Email does not exist <br> Do you have an account? " ;
+         return;
+         }
+         
+         else{
+         //user has an account
+         //covert json string to object
+         var loggedInUser= JSON.parse(localStorage[email]);
+         
+         // take password input
+         var password= document.getElementById("passwordInput").value;
+         
+         // successful login if password is correct
+         if (password === loggedInUser.password) {
+         
+         window.location = "quizpage.php"; //open game page if login is successful
+         
+         console.log (loggedInUser);
+         
+         document.getElementById("LoginFailure").innerHTML= ""; //change ("LoginFailure") to empty
+         
+         localStorage.loggedInUserEmail = loggedInUser.email; // Store logged in user email to local storage
+         }
+         else {
+         document.getElementById("LoginFailure").innerHTML= "Sorry password is not correct please try again.";
+         }
+         }
+         }
+         
+         //logout the user/remove logged in email from local storage.
+         function logout() {
+            localStorage.removeItem("loggedInUserEmail");
+         
+         }     
+   </script>
+</body>
